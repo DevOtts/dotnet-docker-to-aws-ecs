@@ -1,7 +1,7 @@
 ## Deploying Docker App to AWS ECS
 
 Watch the video!
-[![Watch Step by Step on how to Deploying Docker App to AWS ECS](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://youtu.be/vxrO7Vs4EPA)
+[![Watch Step by Step on how to Deploying Docker App to AWS ECS](https://img.youtube.com/vi/vxrO7Vs4EPA/0.jpg)](https://youtu.be/vxrO7Vs4EPA)
 
 
 In this POC, let's deploy a docker App (dotnet6) to AWS using ECS.
