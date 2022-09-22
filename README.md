@@ -1,9 +1,5 @@
 ## Deploying Docker App to AWS ECS
 
-Watch the video!
-[![Watch Step by Step on how to Deploying Docker App to AWS ECS](https://img.youtube.com/vi/vxrO7Vs4EPA/0.jpg)](https://youtu.be/vxrO7Vs4EPA)
-
-
 In this POC, let's deploy a docker App (dotnet6) to AWS using ECS.
 First what we need is:
 1. Create a dotnet project
@@ -16,6 +12,10 @@ First what we need is:
 8. Attach our Task to the Cluster
 9. Open the port on EC2 - Security Group
 10. Voilà
+
+## Watch the video on Youtube
+
+[![Watch Step by Step on how to Deploying Docker App to AWS ECS](https://img.youtube.com/vi/vxrO7Vs4EPA/0.jpg?v1)](https://youtu.be/vxrO7Vs4EPA)
 
 
 ### Creating a dotnet6 project
@@ -38,7 +38,7 @@ dotnet run
  Now we need to create a dockerfile that gives ECS the recipe of what we want to install in our container.
 
  The dockerfile:
- ```json
+ ```dockerfile
  #Build Stage
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0-focal AS Build
@@ -59,15 +59,15 @@ ENTRYPOINT [ "dotnet", "SimpleApi.dll" ]
 
 We have our dockerfile but before we deploy to ECS, let's first build our docker container locally and see if everything is working well. 
 
-``` 
+```bash 
 
-//Running docker command to create the image
+#Running docker command to create the image
 docker build --rm -t devotts/simpleapi:latest .
 
-//To check if the image was created correctly
+#To check if the image was created correctly
 docker image ls | grep simpleapi
 
-//Run the container
+#Run the container
 docker run --rm -p 5000:5000 devotts/simpleapi 
 ```
 
@@ -96,19 +96,19 @@ aws ecr get-login-password --region [AwsRegion] | docker login --username AWS --
 ```
 
 In [AWS ECR](https://us-east-1.console.aws.amazon.com/ecr/create-repository?region=us-east-1) create a new ECR Repository.
-For this example I created a repository called `manual-test`. Copy the URI of the created repository.
+For this example I created a repository called `simple-repo`. Copy the URI of the created repository.
 
 Now we will push the docker image to ECR Repository
 
 ```bash
 #tag 
-docker tag poc-dev/simpleapi:latest [AccountId].dkr.ecr.us-east-1.amazonaws.com/manual-test:latest
+docker tag poc-dev/simpleapi:latest [AccountId].dkr.ecr.us-east-1.amazonaws.com/simple-repo:latest
 
 #push
-docker push [AccountId].dkr.ecr.us-east-1.amazonaws.com/manual-test:latest
+docker push [AccountId].dkr.ecr.us-east-1.amazonaws.com/simple-repo:latest
 ```
 
-In `AWS > ECR > Repositories > manual-test` you will be able to see a new Image tag called "latest".
+In `AWS > ECR > Repositories > simple-repo` you will be able to see a new Image tag called "latest".
 
 ### Creating the ECS
 
@@ -120,7 +120,7 @@ Follow the instructions on the video.
 In a nutshell we will:
 1. [Create a Cluster](https://us-east-1.console.aws.amazon.com/ecs/home?region=us-east-1#/clusters/create/new)
 2. [Create a Task Definition](https://us-east-1.console.aws.amazon.com/ecs/home?region=us-east-1#/taskDefinitions)
-    2.1. Add a container getting the URI from the image `manual-test` stored at ECR
+    2.1. Add a container getting the URI from the image `simple-repo` stored at ECR
 3. Goes back in your cluster and at Tasks tab click in *Run new Task* and associated your cluster with the Task that you just created.
 4. Goes to your EC2 instance attached to yout Cluster, get the Public IPv4 DNS url and voilà, now you are able to access your API here -> http://[some-name].compute-1.amazonaws.com:8888/WeatherForecast
 
